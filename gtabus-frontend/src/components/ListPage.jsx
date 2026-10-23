@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SearchBar from './SearchBar.jsx';
 import Pagination from './Pagination.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const PAGE_SIZE = 8;
 
@@ -17,6 +18,7 @@ export default function ListPage({
   renderRow,
   emptyMessage
 }) {
+  const { isAdmin } = useAuth();
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
 
@@ -37,7 +39,8 @@ export default function ListPage({
           <h1>{title}</h1>
           {subtitle && <p className="subtitle">{subtitle}</p>}
         </div>
-        {actionLabel && (
+        {/* Los botones "+ Nuevo..." solo los ve el administrador */}
+        {actionLabel && isAdmin && (
           <Link to={actionTo}><button className="btn-accent">{actionLabel}</button></Link>
         )}
       </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { EstacionService } from '../services/api.js';
 import ListPage from '../components/ListPage.jsx';
 
@@ -23,13 +24,14 @@ export default function Estaciones() {
                (e.direccion || '').toLowerCase().includes(t) ||
                (e.nombre_municipalidad || '').toLowerCase().includes(t);
       }}
-      columns={['Nombre', 'Dirección', 'Municipalidad']}
+      columns={['Nombre', 'Dirección', 'Municipalidad', '']}
       emptyMessage="Todavía no se ha registrado ninguna estación."
       renderRow={(e) => (
         <tr key={e.id_estacion}>
           <td>{e.nombre}</td>
           <td>{e.direccion}</td>
           <td>{e.nombre_municipalidad}</td>
+          <td><Link to={`/estaciones/${e.id_estacion}`}>Accesos y guardias</Link></td>
         </tr>
       )}
     />

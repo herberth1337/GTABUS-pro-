@@ -1,0 +1,17 @@
+/* La página del mapa usa todo el ancho disponible (las demás se quedan en 1100px) */
+.content:has(.mapa-ancho) { max-width: none; }
+
+.mapa-contenedor { display: flex; gap: 16px; align-items: stretch; }
+.mapa-leyenda {
+  width: 220px; flex-shrink: 0; padding: 14px; align-self: flex-start;
+  max-height: calc(100vh - 220px); overflow: auto;
+}
+.mapa-lienzo { flex: 1; min-width: 0; height: calc(100vh - 220px); min-height: 520px; }
+
+/* Modo "Ampliar": el mapa ocupa toda la ventana */
+.mapa-ampliado {
+  position: fixed; inset: 0; z-index: 2000;
+  background: var(--paper); padding: 16px;
+}
+.mapa-ampliado .mapa-lienzo { height: calc(100vh - 32px); min-height: 0; }
+.mapa-ampliado .mapa-leyenda { max-height: calc(100vh - 32px); }

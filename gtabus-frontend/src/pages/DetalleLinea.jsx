@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { LineaService } from '../services/api.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function DetalleLinea() {
   const { id } = useParams();
+  const { isAdmin } = useAuth();
+  const [linea, setLinea] = useState(null);
   const [estaciones, setEstaciones] = useState([]);
   const [accesos, setAccesos] = useState([]);
   const [buses, setBuses] = useState([]);
 
   useEffect(() => {
+    LineaService.listar().then(r => setLinea(r.data.find(l => String(l.id_linea) === String(id)) || null));
     LineaService.estaciones(id).then(r => setEstaciones(r.data));
     LineaService.accesos(id).then(r => setAccesos(r.data));
     LineaService.buses(id).then(r => setBuses(r.data));
@@ -16,8 +20,23 @@ export default function DetalleLinea() {
 
   return (
     <>
+      <div className="list-header">
+        <div>
+          <h1>{linea ? `${linea.codigo} · ${linea.nombre}` : 'Detalle de la línea'}</h1>
+          {linea && (
+            <p className="subtitle">
+              {linea.nombre_municipalidad} — {estaciones.length} estaciones — {Number(linea.distancia_total_km).toLocaleString('es-GT', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} km
+            </p>
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {isAdmin && <Link to={`/lineas/${id}/ruta`}><button className="btn-accent">Editar ruta y distancias</button></Link>}
+          <Link to="/"><button className="btn-ghost">← Volver a líneas</button></Link>
+        </div>
+      </div>
+
       <div className="card">
-        <h2>Ruta de la línea (orden de estaciones)</h2>
+        <h2 style={{ marginTop: 0 }}>Ruta de la línea (orden de estaciones)</h2>
         <table>
           <thead><tr><th>#</th><th>Estación</th><th>Dist. a la siguiente (km)</th></tr></thead>
           <tbody>
@@ -33,7 +52,7 @@ export default function DetalleLinea() {
       </div>
 
       <div className="card">
-        <h2>Accesos de la línea</h2>
+        <h2 style={{ marginTop: 0 }}>Accesos de la línea</h2>
         <table>
           <thead><tr><th>Estación</th><th>Acceso</th></tr></thead>
           <tbody>
@@ -48,7 +67,7 @@ export default function DetalleLinea() {
       </div>
 
       <div className="card">
-        <h2>Buses asignados ({buses.length})</h2>
+        <h2 style={{ marginTop: 0 }}>Buses asignados ({buses.length})</h2>
         <table>
           <thead><tr><th>Placa</th><th>Capacidad</th><th>Activo</th></tr></thead>
           <tbody>
